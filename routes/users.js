@@ -2,7 +2,7 @@ const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const {User, validateUser} = require("../models/user");
-const {Gallery} = require("../models/gallery");
+// const {Gallery} = require("../models/gallery");
 const express = require("express");
 const router = express.Router();
 
