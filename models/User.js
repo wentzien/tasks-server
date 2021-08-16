@@ -1,16 +1,10 @@
-// const Joi = require("joi");
 const config = require("config");
+const Joi = require("joi");
 const jwt = require("jsonwebtoken");
 const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = require("../startup/db/sequelize").getORM();
 
 const User = sequelize.define("User", {
-    // id: {
-    //     type: Sequelize.INTEGER(11),
-    //     allowNull: false,
-    //     autoIncrement: true,
-    //     primaryKey: true
-    // },
     id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -19,15 +13,35 @@ const User = sequelize.define("User", {
     },
     name: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            isAlphanumeric: true,
+            notNull: true,
+            notEmpty: true,
+            min: 3,
+            max: 50
+        }
     },
     email: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: false,
+        unique: true,
+        validate: {
+            isEmail: true,
+            notNull: true,
+            notEmpty: true,
+            max: 255
+        }
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull: false
+        type: DataTypes.STRING(64),
+        allowNull: false,
+        validate: {
+            notNull: true,
+            notEmpty: true,
+            min: 5,
+            max: 255
+        }
     }
 });
 
@@ -45,25 +59,24 @@ User.prototype.generateAuthToken = function () {
     return token;
 }
 
-// function validateUser(user) {
-//     const schema = Joi.object({
-//         name: Joi.string()
-//             .min(3)
-//             .max(50)
-//             .required(),
-//         email: Joi.string()
-//             .min(5)
-//             .max(255)
-//             .required()
-//             .email(),
-//         password: Joi.string()
-//             .min(5)
-//             .max(255)
-//             .required()
-//     });
-//
-//     return schema.validate(user);
-// }
+function validateUser(user) {
+    const schema = Joi.object({
+        name: Joi.string()
+            .min(3)
+            .max(50)
+            .required(),
+        email: Joi.string()
+            .max(255)
+            .required()
+            .email(),
+        password: Joi.string()
+            .min(5)
+            .max(255)
+            .required()
+    });
+
+    return schema.validate(user);
+}
 
 exports.User = User;
-// exports.validateUser = validateUser;
+exports.validateUser = validateUser;

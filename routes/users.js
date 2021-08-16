@@ -1,7 +1,7 @@
 const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-const {User} = require("../models/User");
+const {User, validateUser} = require("../models/User");
 const express = require("express");
 const router = express.Router();
 
@@ -11,8 +11,8 @@ router.get("/me", auth, async (req, res) => {
 });
 
 router.post("/", async (req, res) => {
-    // const {error} = validateUser(req.body);
-    // if (error) return res.status(400).send(error.details[0].message);
+    const {error} = validateUser(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
 
     let user = await User.findOne({where: {email: req.body.email}});
     if (user) return res.status(400).send("User already registered.");
