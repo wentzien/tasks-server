@@ -10,8 +10,26 @@ const Task = sequelize.define("Task", {
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            notEmpty: true,
+            min: 3,
+            max: 255
+        }
     }
 });
 
+function validateTask(task) {
+    const schema = Joi.object({
+        description: Joi.string()
+            .min(3)
+            .max(255)
+            .required()
+    });
+
+    return schema.validate(task);
+}
+
 exports.Task = Task;
+exports.validateTask = validateTask;
