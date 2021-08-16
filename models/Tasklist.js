@@ -10,8 +10,26 @@ const Tasklist = sequelize.define("Tasklist", {
     },
     name: {
         type: DataTypes.STRING(50),
-        allowNull: false
+        allowNull: false,
+        validate: {
+            notNull: true,
+            notEmpty: true,
+            min: 3,
+            max: 50
+        }
     }
 });
 
+function validateTasklist(task) {
+    const schema = Joi.object({
+        name: Joi.string()
+            .min(3)
+            .max(50)
+            .required()
+    });
+
+    return schema.validate(task);
+}
+
 exports.Tasklist = Tasklist;
+exports.validateTasklist = validateTasklist;
