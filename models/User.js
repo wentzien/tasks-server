@@ -1,45 +1,52 @@
 // const Joi = require("joi");
-// const jwt = require("jsonwebtoken");
-const Sequelize = require("sequelize");
+const config = require("config");
+const jwt = require("jsonwebtoken");
+const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = require("../startup/db/sequelize").getORM();
 
 const User = sequelize.define("User", {
+    // id: {
+    //     type: Sequelize.INTEGER(11),
+    //     allowNull: false,
+    //     autoIncrement: true,
+    //     primaryKey: true
+    // },
     id: {
-        type: Sequelize.INTEGER(11),
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
     },
     name: {
-        type: Sequelize.STRING(50),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     email: {
-        type: Sequelize.STRING(50),
+        type: DataTypes.STRING(50),
         allowNull: false
     },
     password: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     }
 });
 
-// generateAuthToken = (user) => {
-//     const token = jwt.sign(
-//         {
-//             id: user.id,
-//             name: user.name,
-//             email: user.email,
-//             isAdmin: user.isAdmin,
-//             galleryId: user.galleryId
-//             // roles: [],
-//             // operations: []
-//         },
-//         config.get("jwtPrivateKey")
-//     );
-//     return token;
-// }
-//
+User.generateAuthToken = (user) => {
+    const token = jwt.sign(
+        {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            galleryId: user.galleryId
+            // roles: [],
+            // operations: []
+        },
+        config.get("jwtPrivateKey")
+    );
+    return token;
+}
+
 // function validateUser(user) {
 //     const schema = Joi.object({
 //         name: Joi.string()

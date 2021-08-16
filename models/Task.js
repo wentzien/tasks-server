@@ -1,11 +1,11 @@
-const {DataTypes} = require("sequelize");
+const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = require("../startup/db/sequelize").getORM();
 
 const Task = sequelize.define("Task", {
     id: {
-        type: DataTypes.INTEGER(11),
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
         allowNull: false,
-        autoIncrement: true,
         primaryKey: true
     },
     description: {

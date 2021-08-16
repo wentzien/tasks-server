@@ -11,5 +11,9 @@ module.exports = () => {
 
     // Tasklist - Todo
     Tasklist.hasMany(Task);
-    Task.belongsTo(Tasklist);
+    Task.belongsTo(Tasklist, {
+        foreignKey: {
+            allowNull: false
+        }
+    });
 };
