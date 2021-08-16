@@ -1,6 +1,6 @@
-const {User} = require("./user");
-const {Tasklist} = require("./tasklist");
-const {Task} = require("./task");
+const {User} = require("./User");
+const {Tasklist} = require("./Tasklist");
+const {Task} = require("./Task");
 
 module.exports = () => {
     // all associations
