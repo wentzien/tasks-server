@@ -31,14 +31,12 @@ const User = sequelize.define("User", {
     }
 });
 
-User.generateAuthToken = (user) => {
+User.prototype.generateAuthToken = function () {
     const token = jwt.sign(
         {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            isAdmin: user.isAdmin,
-            galleryId: user.galleryId
+            id: this.id,
+            name: this.name,
+            email: this.email,
             // roles: [],
             // operations: []
         },
