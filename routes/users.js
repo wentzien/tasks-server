@@ -1,38 +1,29 @@
 const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
-const {User, validateUser} = require("../models/User");
-// const {Gallery} = require("../models/gallery");
+const {User} = require("../models/User");
 const express = require("express");
 const router = express.Router();
 
 router.get("/me", auth, async (req, res) => {
-    const user = await User.findById(req.user._id).select("-password"); // req.user.id added by auth middleware
+    const user = await User.findOne({where: {id: req.user.id}});
     res.send(user);
 });
 
 router.post("/", async (req, res) => {
-    const {error} = validateUser(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    // const {error} = validateUser(req.body);
+    // if (error) return res.status(400).send(error.details[0].message);
 
-    let user = await User.findOne({email: req.body.email});
+    let user = await User.findOne({where: {email: req.body.email}});
     if (user) return res.status(400).send("User already registered.");
 
-    let gallery = await Gallery.findOne({name: req.body.name});
-    if(gallery) return res.status(400).send("Name is already taken.");
-
-    // create the gallery for the user
-    gallery = new Gallery(_.pick(req.body, ["name"]));
-    await gallery.save();
-
     let userObj = _.pick(req.body, ["name", "email", "password"]);
-    userObj.galleryId = gallery._id;
-    user = new User(userObj);
+    user = User.build(userObj);
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
 
-    const token = user.generateAuthToken(user);
+    const token = User.generateAuthToken(user);
     res
         .header("x-auth-token", token)
         .header("access-control-expose-headers", "x-auth-token")
