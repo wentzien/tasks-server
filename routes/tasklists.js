@@ -4,12 +4,16 @@ const auth = require("../middleware/auth");
 const _ = require("lodash");
 const {User} = require("../models/User");
 const {Tasklist, validateTasklist} = require("../models/Tasklist");
+const task = require("./tasks");
 
 router.get("/", [auth], async (req, res) => {
-    const tasklists = await User.findAll({
+    const userTasklists = (await User.findAll({
         where: {id: req.user.id},
         include: Tasklist
-    });
+    }))[0];
+
+    const tasklists = userTasklists.Tasklists;
+
     res.send(tasklists);
 });
 
@@ -34,7 +38,7 @@ router.put("/:id", [auth], async (req, res) => {
 
     const user = await User.findByPk(req.user.id);
     let tasklist = (await user.getTasklists({where: {id: req.params.id}}))[0]
-    if(!tasklist) return res.status(400).send("Tasklist not found.");
+    if(!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     tasklist.name = req.body.name;
 
@@ -64,5 +68,7 @@ router.get("/:id", [auth], async (req, res) => {
 
     res.send(tasklist);
 });
+
+router.use("/:tasklistId/tasks", task);
 
 module.exports = router;
