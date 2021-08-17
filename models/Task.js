@@ -1,3 +1,4 @@
+const Joi = require("joi");
 const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = require("../startup/db/sequelize").getORM();
 
