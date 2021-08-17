@@ -22,7 +22,10 @@ module.exports = {
         }
 
         require("../../models/associations")();
-        await sequelize.sync({alter: true});
+        await sequelize.sync({
+            // force: true,
+            // alter: true
+        });
     },
     getORM: () => {
         return sequelize;
