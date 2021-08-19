@@ -10,7 +10,7 @@ router.get("/", [auth], async (req, res) => {
     let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
-    const tasks = tasklist.getTasks();
+    const tasks = await tasklist.getTasks();
 
     res.send(tasks);
 });
@@ -60,7 +60,7 @@ router.delete("/:id", [auth], async (req, res) => {
     let task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
     if (!task) return res.status(404).send("The task with the given ID was not found.");
 
-    task.destroy();
+    await task = task.destroy();
 
     task = _.pick(task, ["description"]);
 
