@@ -60,7 +60,7 @@ router.delete("/:id", [auth], async (req, res) => {
     let task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
     if (!task) return res.status(404).send("The task with the given ID was not found.");
 
-    await task = task.destroy();
+    task = await task.destroy();
 
     task = _.pick(task, ["description"]);
 
