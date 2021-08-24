@@ -9,7 +9,7 @@ const Tasklist = sequelize.define("Tasklist", {
         allowNull: false,
         primaryKey: true
     },
-    name: {
+    title: {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
@@ -23,7 +23,7 @@ const Tasklist = sequelize.define("Tasklist", {
 
 function validateTasklist(task) {
     const schema = Joi.object({
-        name: Joi.string()
+        title: Joi.string()
             .min(3)
             .max(50)
             .required()

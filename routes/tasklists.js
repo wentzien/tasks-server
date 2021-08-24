@@ -24,7 +24,7 @@ router.post("/", [auth], async (req, res) => {
     const user = await User.findByPk(req.user.id);
 
     const tasklist = await Tasklist.create({
-        name: req.body.name
+        title: req.body.title
     });
 
     await user.addTasklist(tasklist);
@@ -40,11 +40,11 @@ router.put("/:id", [auth], async (req, res) => {
     let tasklist = (await user.getTasklists({where: {id: req.params.id}}))[0]
     if(!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
-    tasklist.name = req.body.name;
+    tasklist.title = req.body.title;
 
     await tasklist.save();
 
-    tasklist = _.pick(tasklist, ["name"]);
+    tasklist = _.pick(tasklist, ["title"]);
 
     res.send(tasklist);
 });
@@ -56,7 +56,7 @@ router.delete("/:id", [auth], async (req, res) => {
 
     tasklist.destroy();
 
-    tasklist = _.pick(tasklist, ["name"]);
+    tasklist = _.pick(tasklist, ["title"]);
 
     res.send(tasklist);
 });
