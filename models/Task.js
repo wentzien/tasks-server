@@ -18,6 +18,14 @@ const Task = sequelize.define("Task", {
             min: 3,
             max: 255
         }
+    },
+    done: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0
+    },
+    important: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: 0
     }
 });
 
@@ -26,7 +34,9 @@ function validateTask(task) {
         description: Joi.string()
             .min(3)
             .max(255)
-            .required()
+            .required(),
+        done: Joi.boolean(),
+        important: Joi.boolean()
     });
 
     return schema.validate(task);
