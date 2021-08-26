@@ -6,13 +6,15 @@ let sequelize;
 
 module.exports = {
     initORM: async () => {
-        sequelize = new Sequelize({
-            host: config.get("db.mySql.host"),
-            database: config.get("db.mySql.database"),
-            username: config.get("db.mySql.user"),
-            password: config.get("db.mySql.password"),
-            dialect: "mysql"
-        });
+        sequelize = new Sequelize(
+            config.get("db.mySql.database"),
+            config.get("db.mySql.user"),
+            config.get("db.mySql.password"),
+            {
+                host: config.get("db.mySql.host"),
+                dialect: "mysql",
+                logging: false
+            });
 
         try {
             await sequelize.authenticate();
