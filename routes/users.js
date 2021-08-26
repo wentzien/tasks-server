@@ -6,7 +6,10 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/me", auth, async (req, res) => {
-    const user = await User.findOne({where: {id: req.user.id}});
+    let user = await User.findOne({where: {id: req.user.id}});
+
+    user = _.pick(user, ["id", "name", "email", "createdAt", "updatedAt"]);
+
     res.send(user);
 });
 
