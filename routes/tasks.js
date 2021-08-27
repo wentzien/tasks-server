@@ -24,7 +24,7 @@ router.post("/", [auth], async (req, res) => {
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     const task = await Task.create({
-        description: req.body.description
+        title: req.body.title
     });
 
     await tasklist.addTask(task);
@@ -43,9 +43,14 @@ router.put("/:id", [auth], async (req, res) => {
     const task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
     if (!task) return res.status(404).send("The task with the given ID was not found.");
 
+    task.title = req.body.title;
     task.description = req.body.description;
+    task.notes = req.body.notes;
+    task.dueAt = req.body.dueAt;
     task.done = req.body.done;
+    task.doneAt = req.body.doneAt;
     task.important = req.body.important;
+    task.today = req.body.today;
 
     await task.save();
 
