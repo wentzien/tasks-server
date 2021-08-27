@@ -3,11 +3,14 @@ FROM node:12
 WORKDIR /app
 
 ENV PORT=80
-ENV DB_HOST=""
-ENV DB_PORT=3306
-ENV DB_NAME=""
-ENV DB_USER=""
-ENV DB_PASSWORD=""
+ENV express_jwtPrivateKey=""
+
+ENV mySql_host=""
+ENV mySql_port=3306
+ENV mySql_connectionLimit=10
+ENV mySql_database=""
+ENV mySql_user=""
+ENV mySql_password=""
 
 COPY package.json ./
 
