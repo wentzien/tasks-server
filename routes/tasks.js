@@ -24,8 +24,8 @@ router.post("/", [auth], async (req, res) => {
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     const task = await Task.create({
-        title: req.body.title
-    });
+            title: req.body.title,
+        });
 
     await tasklist.addTask(task);
 
