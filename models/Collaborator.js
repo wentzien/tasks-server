@@ -2,7 +2,7 @@ const Joi = require("joi");
 const {Sequelize, DataTypes} = require("sequelize");
 const sequelize = require("../startup/db/sequelize").getORM();
 
-const Share = sequelize.define("Share", {
+const Collaborator = sequelize.define("Collaborator", {
     id: {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
@@ -10,16 +10,16 @@ const Share = sequelize.define("Share", {
         primaryKey: true
     },
     role: {
-        type: DataTypes.ENUM("Editor", "Reader"),
+        type: DataTypes.ENUM("Creator", "Editor", "Reader"),
         defaultValue: "Reader"
     },
     status: {
-        type: DataTypes.ENUM("Invited", "Accepted", "Declined"),
+        type: DataTypes.ENUM("Invited", "Accepted", "Declined", "Owner"),
         defaultValue: "Invited"
     }
 });
 
-function validateShare(task) {
+function validateCollaborator(task) {
     const schema = Joi.object({
         role: Joi.string().valid("Invited", "Accepted", "Declined").allow(""),
         email: Joi.string().email().required()
@@ -28,5 +28,5 @@ function validateShare(task) {
     return schema.validate(task);
 }
 
-exports.Share = Share;
-exports.validateShare = validateShare;
+exports.Collaborator = Collaborator;
+exports.validateCollaborator = validateCollaborator;

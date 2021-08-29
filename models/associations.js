@@ -1,35 +1,30 @@
 const {User} = require("./User");
 const {Tasklist} = require("./Tasklist");
 const {Task} = require("./Task");
-const {Share} = require("./Share");
+const {Collaborator} = require("./Collaborator");
 
 module.exports = () => {
     // all associations
 
     // User (Creator) - Tasklist
-    User.hasMany(Tasklist);
-    Tasklist.belongsTo(User);
+    // User.hasMany(Tasklist);
+    // Tasklist.belongsTo(User);
 
-    // Share - Tasklist
-    Tasklist.hasMany(Share);
-    Share.belongsTo(Tasklist);
+    // Collaborator - Tasklist
+    Tasklist.hasMany(Collaborator);
+    Collaborator.belongsTo(Tasklist);
 
-    // User (invited) - Share
-    User.hasMany(Share, {
-        as: "InvitedUser",
-        foreignKey: "InvitedUserId"
-    });
-    Share.belongsTo(User, {
-        as: "InvitedUser"
-    })
+    // User (collaborator) - Share
+    User.hasMany(Collaborator);
+    Collaborator.belongsTo(User);
 
     // User (invitedBy) - Share
-    User.hasMany(Share, {
-        as: "InvitedByUser",
+    User.hasMany(Collaborator, {
+        as: "InvitedBy",
         foreignKey: "InvitedByUserId"
     });
-    Share.belongsTo(User, {
-        as: "InvitedByUser",
+    Collaborator.belongsTo(User, {
+        as: "InvitedBy",
     });
 
     // Tasklist - Task

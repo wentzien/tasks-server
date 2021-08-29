@@ -19,7 +19,7 @@ const Tasklist = sequelize.define("Tasklist", {
             max: 50
         }
     },
-    shared: {
+    allowShareByLink: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
     },

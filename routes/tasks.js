@@ -2,12 +2,20 @@ const express = require("express");
 const router = express.Router({mergeParams: true});
 const auth = require("../middleware/auth");
 const _ = require("lodash");
-const {User} = require("../models/User");
+const {Tasklist} = require("../models/Tasklist");
 const {Task, validateTask} = require("../models/Task");
+const {Collaborator} = require("../models/Collaborator");
 
 router.get("/", [auth], async (req, res) => {
-    const user = await User.findByPk(req.user.id);
-    let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
+    const tasklist = await Tasklist.findOne({
+       where: {id: req.params.tasklistId},
+       include: {
+           model: Collaborator,
+           where: {
+               UserId: req.user.id
+           }
+       }
+    });
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     const tasks = await tasklist.getTasks();
@@ -19,15 +27,22 @@ router.post("/", [auth], async (req, res) => {
     const {error} = validateTask(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await User.findByPk(req.user.id);
-    let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
+    const tasklist = await Tasklist.findOne({
+        where: {id: req.params.tasklistId},
+        include: {
+            model: Collaborator,
+            where: {
+                UserId: req.user.id,
+                role: ["Creator", "Editor"]
+            }
+        }
+    });
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     const task = await Task.create({
             title: req.body.title,
+            TasklistId: tasklist.id
         });
-
-    await tasklist.addTask(task);
 
     res.send(task);
 });
@@ -36,12 +51,23 @@ router.put("/:id", [auth], async (req, res) => {
     const {error} = validateTask(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const user = await User.findByPk(req.user.id);
-    let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
-    if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
-
-    const task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
-    if (!task) return res.status(404).send("The task with the given ID was not found.");
+    const task = await Task.findByPk(req.params.id, {
+       include: {
+           model: Tasklist,
+           where: {
+               id: req.params.tasklistId
+           },
+           include: {
+               model: Collaborator,
+               where: {
+                   UserId: req.user.id,
+                   role: ["Creator", "Editor"]
+               }
+           }
+       }
+    });
+    if (!task) return res.status(404).send("The tasklist or task with the given IDs was not" +
+        " found.");
 
     task.title = req.body.title;
     task.description = req.body.description;
@@ -58,12 +84,23 @@ router.put("/:id", [auth], async (req, res) => {
 });
 
 router.delete("/:id", [auth], async (req, res) => {
-    const user = await User.findByPk(req.user.id);
-    let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
-    if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
-
-    const task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
-    if (!task) return res.status(404).send("The task with the given ID was not found.");
+    const task = await Task.findByPk(req.params.id, {
+        include: {
+            model: Tasklist,
+            where: {
+                id: req.params.tasklistId
+            },
+            include: {
+                model: Collaborator,
+                where: {
+                    UserId: req.user.id,
+                    role: ["Creator", "Editor"]
+                }
+            }
+        }
+    });
+    if (!task) return res.status(404).send("The tasklist or task with the given IDs was not" +
+        " found.");
 
     await task.destroy();
 
@@ -71,12 +108,23 @@ router.delete("/:id", [auth], async (req, res) => {
 });
 
 router.get("/:id", [auth], async (req, res) => {
-    const user = await User.findByPk(req.user.id);
-    let tasklist = (await user.getTasklists({where: {id: req.params.tasklistId}}))[0]
-    if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
-
-    const task = (await tasklist.getTasks({where: {id: req.params.id}}))[0];
-    if (!task) return res.status(404).send("The task with the given ID was not found.");
+    const task = await Task.findByPk(req.params.id, {
+        include: {
+            model: Tasklist,
+            where: {
+                id: req.params.tasklistId
+            },
+            include: {
+                model: Collaborator,
+                where: {
+                    UserId: req.user.id,
+                    role: ["Creator", "Editor"]
+                }
+            }
+        }
+    });
+    if (!task) return res.status(404).send("The tasklist or task with the given IDs was not" +
+        " found.");
 
     res.send(task);
 });
