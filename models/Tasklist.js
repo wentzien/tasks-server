@@ -18,6 +18,20 @@ const Tasklist = sequelize.define("Tasklist", {
             min: 3,
             max: 50
         }
+    },
+    shared: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    inviteLinkEditor: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false
+    },
+    inviteLinkReader: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false
     }
 });
 
