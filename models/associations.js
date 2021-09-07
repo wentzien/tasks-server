@@ -20,11 +20,10 @@ module.exports = () => {
 
     // User (invitedBy) - Share
     User.hasMany(Collaborator, {
-        as: "InvitedBy",
-        foreignKey: "InvitedByUserId"
+        as: "InvitedByUser"
     });
     Collaborator.belongsTo(User, {
-        as: "InvitedBy",
+        as: "InvitedByUser"
     });
 
     // Tasklist - Task
