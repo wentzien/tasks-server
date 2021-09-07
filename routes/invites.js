@@ -30,7 +30,7 @@ router.post("/", [auth], async (req, res) => {
     const {error} = validateCollaborator(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
-    const tasklist = await Tasklist.fineOne({
+    const tasklist = await Tasklist.findOne({
         where: {id: req.params.tasklistId},
         include: {
             model: Collaborator,

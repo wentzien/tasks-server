@@ -21,7 +21,7 @@ const Collaborator = sequelize.define("Collaborator", {
 
 function validateCollaborator(task) {
     const schema = Joi.object({
-        role: Joi.string().valid("Invited", "Accepted", "Declined").allow(""),
+        role: Joi.string().valid("Creator", "Editor", "Reader"),
         email: Joi.string().email().required()
     });
 

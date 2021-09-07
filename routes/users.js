@@ -2,7 +2,8 @@ const auth = require("../middleware/auth");
 const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const {User, validateUser} = require("../models/User");
-const {Share} = require("../models/Collaborator");
+const {Collaborator} = require("../models/Collaborator");
+const {Tasklist} = require("../models/Tasklist");
 const express = require("express");
 const router = express.Router();
 
@@ -38,18 +39,23 @@ router.post("/", async (req, res) => {
 // invites
 
 router.get("/invites", [auth], async (req, res) => {
-    const userInvites = await User.findOne({
-        where: {id: req.user.id},
-        include: {
-            model: Share,
-            as: "InvitedUser",
-            where: {
-                status: "Invited"
+    const invites = await Collaborator.findAll({
+        where: {
+            UserId: req.user.id,
+            status: "Invited"
+        },
+        include: [
+            {
+                model: Tasklist,
+                attributes: ["title"]
+            },
+            {
+                model: User,
+                as: "InvitedByUser",
+                attributes: ["name"]
             }
-        }
+        ]
     });
-
-    const invites = userInvites.InvitedUser;
 
     res.send(invites);
 });
