@@ -60,13 +60,13 @@ router.get("/invites", [auth], async (req, res) => {
     res.send(invites);
 });
 
-router.get("/invites/:sharedId/:status", [auth], async (req, res) => {
+router.get("/invites/:collaboratorId/:status", [auth], async (req, res) => {
     if (req.params.status !== "accept" && req.params.status !== "decline") return res.status(404).send("Invite status cannot be changed.");
-    const invite = await Share.findOne({
+    const invite = await Collaborator.findOne({
         where: {
-            id: req.params.sharedId,
+            id: req.params.collaboratorId,
             status: "Invited",
-            InvitedUserId: req.user.id
+            UserId: req.user.id
         }
     });
     if (!invite) return res.status(404).send("Invite was not found or is not longer active.");
