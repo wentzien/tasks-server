@@ -12,8 +12,10 @@ router.get("/myday", [auth], async (req, res) => {
         where: {today: true},
         include: {
             model: Tasklist,
+            required: true,
             include: {
                 model: Collaborator,
+                required: true,
                 where: {UserId: req.user.id},
             }
         }
@@ -27,8 +29,10 @@ router.get("/important", [auth], async (req, res) => {
         where: {important: true},
         include: {
             model: Tasklist,
+            required: true,
             include: {
                 model: Collaborator,
+                required: true,
                 where: {UserId: req.user.id},
             }
         }
@@ -45,8 +49,10 @@ router.get("/planned", [auth], async (req, res) => {
         },
         include: {
             model: Tasklist,
+            required: true,
             include: {
                 model: Collaborator,
+                required: true,
                 where: {UserId: req.user.id},
             }
         }
@@ -59,8 +65,10 @@ router.get("/all", [auth], async (req, res) => {
     const tasks = await Task.findAll({
         include: {
             model: Tasklist,
+            required: true,
             include: {
                 model: Collaborator,
+                required: true,
                 where: {UserId: req.user.id},
             }
         }
@@ -74,8 +82,10 @@ router.get("/done", [auth], async (req, res) => {
         where: {done: true},
         include: {
             model: Tasklist,
+            required: true,
             include: {
                 model: Collaborator,
+                required: true,
                 where: {UserId: req.user.id},
             }
         }
