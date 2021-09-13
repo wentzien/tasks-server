@@ -19,6 +19,10 @@ const Tasklist = sequelize.define("Tasklist", {
             max: 50
         }
     },
+    shared: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
     allowShareByLink: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
@@ -32,7 +36,17 @@ const Tasklist = sequelize.define("Tasklist", {
         type: DataTypes.UUID,
         defaultValue: Sequelize.UUIDV4,
         allowNull: false
-    }
+    },
+    accessLinkEditor: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false
+    },
+    accessLinkReader: {
+        type: DataTypes.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false
+    },
 });
 
 function validateTasklist(task) {
@@ -41,6 +55,7 @@ function validateTasklist(task) {
             .min(3)
             .max(50)
             .required(),
+        shared: Joi.boolean(),
         allowShareByLink: Joi.boolean()
     });
 

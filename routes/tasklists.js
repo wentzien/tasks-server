@@ -54,6 +54,8 @@ router.put("/:id", [auth], async (req, res) => {
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
 
     tasklist.title = req.body.title;
+    if (!tasklist.shared) tasklist.shared = req.body.shared;
+    if (tasklist.shared) tasklist.allowShareByLink = req.body.allowShareByLink;
 
     await tasklist.save();
 
@@ -65,7 +67,10 @@ router.delete("/:id", [auth], async (req, res) => {
         where: {id: req.params.id},
         include: {
             model: Collaborator,
-            where: {UserId: req.user.id}
+            where: {
+                UserId: req.user.id,
+                role: "Creator"
+            }
         }
     });
     if (!tasklist) return res.status(404).send("The tasklist with the given ID was not found.");
